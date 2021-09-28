@@ -1,42 +1,7 @@
 import glfw
 from OpenGL.GL import *
 import OpenGL.GL.shaders
-
-triangle = [-0.5, -0.5, 0.0,
-            0.5, -0.5, 0.0,
-            0.0,  0.5, 0.0]
-
-
-vertex_shader = """
-    #version 330
-    in vec3 position;
-    in vec3 color;
-    out vec3 newColor;
-    void main()
-    {
-        gl_Position = vec4(position, 1.0f);
-        newColor = color;
-    }
-    """
-
-fragment_shader = """
-    #version 330
-    in vec3 newColor;
-    out vec4 outColor;
-    void main()
-    {
-        outColor = vec4(newColor, 1.0f);
-    }
-    """
-
-shader = OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
-                                              OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
-
-
-
-VBO = glGenBuffers(1)       # create buffer for vertex and generate id
-glBindBuffer(GL_ARRAY_BUFFER, VBO)  #create type of buffer
-glBufferData(GL_ARRAY_BUFFER, 72, triangle, GL_STATIC_DRAW) #copy data in buffer memory
+import numpy
 
 # input behavior
 def processInput(window):
@@ -58,8 +23,55 @@ def main():
         glfw.terminate()
         return
 
-    # Make the window's context current
+    # Make the window's context current in a stream
     glfw.make_context_current(window)
+
+    # create triangle
+    triangle = [-0.5, -0.5, 0.0,
+                0.5, -0.5, 0.0,
+                0.0, 0.5, 0.0]
+    triangle = numpy.array(triangle, dtype=numpy.float32)
+    print(triangle)
+
+# create shaders
+    vertex_shader = """
+        #version 330
+        in vec3 position;
+        in vec3 color;
+        out vec3 newColor;
+        void main()
+        {
+            gl_Position = vec4(position, 1.0f);
+            newColor = color;
+        }
+        """
+
+    fragment_shader = """
+        #version 330
+        in vec3 newColor;
+        out vec4 outColor;
+        void main()
+        {
+            outColor = vec4(newColor, 1.0f);
+        }
+        """
+
+    shader = OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
+                                              OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
+
+    VBO = glGenBuffers(1)  # create buffer for vertex and generate id
+    glBindBuffer(GL_ARRAY_BUFFER, VBO)  # create type of buffer
+    glBufferData(GL_ARRAY_BUFFER, 72, triangle, GL_STATIC_DRAW)  # copy data in buffer memory
+
+    posAttrib = glGetAttribLocation(shader, "position")  # get link between attribute and vertex
+    #glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0)  # как данные извлекаются из массива(пропуски между данными)
+    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, ctypes.c_void_p(0))# в них можно записать цвет
+    glEnableVertexAttribArray(posAttrib)  # activation
+
+
+    glUseProgram(shader)
+
+    glClearColor(0.4, 0.3, 0.3, 1.0)
 
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
@@ -67,8 +79,8 @@ def main():
         processInput(window)
 
         # Render here, e.g. using pyOpenGL
-        glClearColor(0.7, 0.3, 0.3, 1.0)
         glClear(GL_COLOR_BUFFER_BIT)
+        glDrawArrays(GL_TRIANGLES, 0, 3)    #???
 
 
 
