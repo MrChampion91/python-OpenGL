@@ -5,49 +5,63 @@ import numpy
 import pyrr
 from PIL import Image
 
+
+
+
+
+def window_resize(window, width, height):
+    glViewport(0, 0, width, height)
+
 def main():
 
     # initialize glfw
     if not glfw.init():
         return
 
-    window = glfw.create_window(800, 600, "My OpenGL window", None, None)
+    w_width, w_height = 800, 600
+
+    # glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
+
+    window = glfw.create_window(w_width, w_height, "My OpenGL window", None, None)
+
 
     if not window:
         glfw.terminate()
         return
 
     glfw.make_context_current(window)
-    #        positions        colors            text coord
-    cube = [-0.5, -0.5, 0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-             0.5, -0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-             0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            -0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+    glfw.set_window_size_callback(window, window_resize)
 
-            -0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-            0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-            0.5, 0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            -0.5, 0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+    #        positions            colors            text coord
+    cube = [-0.5, -0.5, 0.5,    1.0, 0.0, 0.0,       0.0, 0.0,
+             0.5, -0.5, 0.5,    0.0, 1.0, 0.0,       1.0, 0.0,
+             0.5, 0.5, 0.5,     0.0, 0.0, 1.0,       1.0, 1.0,
+            -0.5, 0.5, 0.5,     1.0, 1.0, 1.0,       0.0, 1.0,
 
-            0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-            0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-            0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            0.5, -0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+            -0.5, -0.5, -0.5,   1.0, 1.0, 0.0,       0.0, 0.0,
+            0.5, -0.5, -0.5,    1.0, 0.0, 1.0,       1.0, 0.0,
+            0.5, 0.5, -0.5,     0.0, 1.0, 1.0,       1.0, 1.0,
+            -0.5, 0.5, -0.5,    0.0, 0.0, 0.0,       0.0, 1.0,
 
-            -0.5, 0.5, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-            -0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-            -0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            -0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+            0.5, -0.5, -0.5,    1.0, 0.0, 1.0,       0.0, 0.0,
+            0.5, 0.5, -0.5,     0.0, 1.0, 1.0,       1.0, 0.0,
+            0.5, 0.5, 0.5,      0.0, 0.0, 1.0,       1.0, 1.0,
+            0.5, -0.5, 0.5,     0.0, 1.0, 0.0,       0.0, 1.0,
 
-            -0.5, -0.5, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-            0.5, -0.5, -0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-            0.5, -0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            -0.5, -0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0,
+            -0.5, 0.5, -0.5,    0.0, 0.0, 0.0,       0.0, 0.0,
+            -0.5, -0.5, -0.5,   1.0, 1.0, 0.0,       1.0, 0.0,
+            -0.5, -0.5, 0.5,    1.0, 0.0, 0.0,       1.0, 1.0,
+            -0.5, 0.5, 0.5,     1.0, 1.0, 1.0,       0.0, 1.0,
 
-            0.5, 0.5, -0.5, 1.0, 0.0, 0.0, 0.0, 0.0,
-            -0.5, 0.5, -0.5, 0.0, 1.0, 0.0, 1.0, 0.0,
-            -0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 1.0,
-            0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 1.0]
+            -0.5, -0.5, -0.5,   1.0, 1.0, 0.0,       0.0, 0.0,
+            0.5, -0.5, -0.5,    1.0, 0.0, 1.0,       1.0, 0.0,
+            0.5, -0.5, 0.5,     0.0, 1.0, 0.0,       1.0, 1.0,
+            -0.5, -0.5, 0.5,    1.0, 0.0, 0.0,       0.0, 1.0,
+
+            0.5, 0.5, -0.5,     0.0, 1.0, 1.0,       0.0, 0.0,
+            -0.5, 0.5, -0.5,    0.0, 0.0, 0.0,       1.0, 0.0,
+            -0.5, 0.5, 0.5,     1.0, 1.0, 1.0,       1.0, 1.0,
+            0.5, 0.5, 0.5,      0.0, 0.0, 1.0,       0.0, 1.0]
 
     cube = numpy.array(cube, dtype = numpy.float32)
 
@@ -64,20 +78,23 @@ def main():
     indices = numpy.array(indices, dtype= numpy.uint32)
 
     vertex_shader = """
-    #version 330
-    in layout(location = 0) vec3 position;
-    in layout(location = 1) vec3 color;
-    in layout(location = 2) vec2 textureCoords;
-    uniform mat4 transform;
-    out vec3 newColor;
-    out vec2 newTexture;
-    void main()
-    {
-        gl_Position = transform * vec4(position, 1.0f);
-        newColor = color;
-        newTexture = textureCoords;
-    }
-    """
+        #version 330
+        in layout(location = 0) vec3 position;
+        in layout(location = 1) vec3 color;
+        in layout(location = 2) vec2 textureCoords;
+        uniform mat4 transform;
+        uniform mat4 view;
+        uniform mat4 model;
+        uniform mat4 projection;
+        out vec3 newColor;
+        out vec2 newTexture;
+        void main()
+        {
+            gl_Position = projection * view * model * transform * vec4(position, 1.0f);
+            newColor = color;
+            newTexture = textureCoords;
+        }
+        """
 
     fragment_shader = """
     #version 330
@@ -87,10 +104,10 @@ def main():
     uniform sampler2D samplerTexture;
     void main()
     {
-        outColor = texture(samplerTexture, newTexture) ;
+        outColor = texture(samplerTexture, newTexture) * vec4(newColor, 1.0f);
     }
     """
-    #outColor = texture(samplerTexture, newTexture) * vec4(newColor, 1.0f);
+    #outColor = texture(samplerTexture, newTexture);
 
     shader = OpenGL.GL.shaders.compileProgram(OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
                                               OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
@@ -107,9 +124,9 @@ def main():
     glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
     glEnableVertexAttribArray(position)
 
-    #color = glGetAttribLocation(shader, "color")
-    #glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
-    #glEnableVertexAttribArray(color)
+    color = glGetAttribLocation(shader, "color")
+    glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
+    glEnableVertexAttribArray(color)
 
     texture_coords = glGetAttribLocation(shader, "textureCoords")
     glVertexAttribPointer(texture_coords, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(24))
@@ -133,6 +150,20 @@ def main():
     glClearColor(0.2, 0.3, 0.2, 1.0)
     glEnable(GL_DEPTH_TEST)
     #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+
+    #peerspective viev
+    view = pyrr.matrix44.create_from_translation(pyrr.Vector3([0.0, 0.0, -3.0]))
+    projection = pyrr.matrix44.create_perspective_projection_matrix(35.0, w_width / w_height, 0.1, 100.0)
+    model = pyrr.matrix44.create_from_translation(pyrr.Vector3([0.0, 0.0, 0.0]))
+
+    view_loc = glGetUniformLocation(shader, "view")
+    proj_loc = glGetUniformLocation(shader, "projection")
+    model_loc = glGetUniformLocation(shader, "model")
+
+    glUniformMatrix4fv(view_loc, 1, GL_FALSE, view)
+    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, projection)
+    glUniformMatrix4fv(model_loc, 1, GL_FALSE, model)
+
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
